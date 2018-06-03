@@ -42,6 +42,9 @@ for i = 1:m
 end
 
 J = J/m;
+RegularizedJ = sum(sum(Theta1(:,2:end) .^ 2)) + sum(sum(Theta2(:,2:end) .^ 2));
+RegularizedJ = lambda*RegularizedJ/(2*m);
+J = J + RegularizedJ; 
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
 %               following parts.
