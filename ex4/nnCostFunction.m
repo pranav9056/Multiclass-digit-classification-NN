@@ -33,13 +33,27 @@ Theta2_grad = zeros(size(Theta2));
 
 for i = 1:m
     x = X(i,:);
-    hQ = feedForward(Theta1,Theta2,x);
+    [hQ,a2,z3,z2] = feedForward(Theta1,Theta2,x);
+    % setting the Y vector
     Y = zeros(num_labels,1);
     Y(y(i)) = 1;
+    
+    % back prop
+    delta3 = hQ' - Y;
+    delta2 = (Theta2' * delta3) .* [0;sigmoidGradient(z2')];
+    delta2 = delta2(2:end);
+    Theta2_grad = Theta2_grad + delta3 * a2;
+    %delta1 = (Theta1' * delta2(2:end)) .* sigmoidGradient(x');
+    Theta1_grad = Theta1_grad + delta2 * x;
+    % cost function calculation
     temp = -1* (Y .* log(hQ') + (1-Y) .* log(1-hQ'));
     J = J + sum(temp);
    
 end
+
+Theta1_grad = Theta1_grad ./ m;
+Theta2_grad = Theta2_grad ./ m;
+
 
 J = J/m;
 RegularizedJ = sum(sum(Theta1(:,2:end) .^ 2)) + sum(sum(Theta2(:,2:end) .^ 2));
